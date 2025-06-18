@@ -130,7 +130,7 @@ def login(request):
         data = json.loads(request.body)
         email = data.get('email')
         password = data.get('password')
-
+        print(email,password)
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -145,7 +145,7 @@ def login(request):
         if tokens.status_code == 200:
             token_data = tokens.json()
 
-            response = JsonResponse({'objective': 'Login success'})
+            response = JsonResponse({'objective': 'Login success','success': True,}, status=200)
             response.set_cookie(
                 key='token_access',
                 value=token_data['access'],

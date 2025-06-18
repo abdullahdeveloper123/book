@@ -527,53 +527,50 @@
 
   <script>
     function handleLogin(event) {
-      event.preventDefault();
-      
-      const formData = new FormData(document.getElementById('loginForm'));
-      const loginData = {};
-      formData.forEach((key,value) => {
-        loginData[key]=value
-      });
+  event.preventDefault();
+  
+  const formData = new FormData(document.getElementById('loginForm'));
+  const loginData = {};
+  formData.forEach((value, key) => {
+    loginData[key] = value;
+  });
 
-      // Hide any previous error messages
-      const errorMessage = document.getElementById('errorMessage');
-      errorMessage.style.display = 'none';
+  // Hide previous error message
+  const errorMessage = document.getElementById('errorMessage');
+  errorMessage.style.display = 'none';
 
-      // Show loading state
-      const submitButton = event.target.querySelector('.login-button');
-      const originalText = submitButton.textContent;
-      submitButton.textContent = 'Entering...';
-      submitButton.disabled = true;
+  // Show loading state
+  const submitButton = event.target.querySelector('.login-button');
+  const originalText = submitButton.textContent;
+  submitButton.textContent = 'Entering...';
+  submitButton.disabled = true;
 
-      // Send login request to Django backend
-      fetch('http://127.0.0.1:8000/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        if (data.success) {
-          // Success - redirect to home or dashboard
-          window.location.href = data.redirect_url || 'home/';
-        } else {
-          // Show error message
-          showError(data.message || 'Invalid credentials. Please try again.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showError('A connection error occurred. Please try again.');
-      })
-      .finally(() => {
-        // Reset button state
-        submitButton.textContent = originalText;
-        submitButton.disabled = false;
-      });
+  // Send login request to Django backend
+  fetch('http://127.0.0.1:8000/login/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(loginData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    if (data.success) {
+      window.location.href = data.redirect_url || '{% url "home" %}';
+    } else {
+      showError(data.message || 'Invalid credentials. Please try again.');
     }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showError('A connection error occurred. Please try again.');
+  })
+  .finally(() => {
+    submitButton.textContent = originalText;
+    submitButton.disabled = false;
+  });
+}
 
     function showError(message) {
       const errorMessage = document.getElementById('errorMessage');
