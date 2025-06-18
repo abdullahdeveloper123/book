@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details - Echoes of Wisdom</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --parchment: #f7f3e9;
+            --ink-dark: #2c1810;
+            --ink-medium: #5d4e37;
+            --gold-accent: #d4af37;
+            --gold-light: #f4e6a1;
+            --shadow-deep: rgba(44, 24, 16, 0.15);
+            --shadow-soft: rgba(44, 24, 16, 0.08);
+            --emerald: #2d5e3e;
+            --emerald-light: #4a7c59;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%);
+            font-family: 'Crimson Text', serif;
+            color: var(--ink-dark);
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            gap: 80px;
+            position: relative;
+            align-items: flex-start;
+        }
+
+        .book-info-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .purchase-container {
+            flex: 0 0 400px;
+            position: sticky;
+            top: 80px;
+        }
+
+        .ornamental-border {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 2px solid var(--gold-accent);
+            border-image: linear-gradient(45deg, var(--gold-accent), var(--gold-light), var(--gold-accent)) 1;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .back-nav {
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--ink-medium);
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            border-color: var(--gold-accent);
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateX(-3px);
+        }
+
+        .book-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 600;
+            color: var(--ink-dark);
+            margin-bottom: 30px;
+            position: relative;
+            text-shadow: 0 2px 4px var(--shadow-soft);
+        }
+
+        .book-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-accent), var(--gold-light), transparent);
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            font-style: italic;
+            color: var(--ink-medium);
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: var(--ink-dark);
+        }
+
+        .book-description {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 50px;
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow:
+                0 12px 40px var(--shadow-soft),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .book-description::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            color: var(--gold-accent);
+            opacity: 0.2;
+            line-height: 0.8;
+            pointer-events: none;
+        }
+
+        .description-text {
+            font-size: 1.3rem;
+            line-height: 1.9;
+            color: var(--ink-dark);
+            position: relative;
+            z-index: 2;
+            text-align: justify;
+        }
+
+        .purchase-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 40px 30px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow:
+                0 12px 40px var(--shadow-soft),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            position: relative;
+        }
+
+        .purchase-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--ink-dark);
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 2px 4px var(--shadow-soft);
+        }
+
+        .price-display {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .price-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--gold-accent);
+            text-shadow: 0 2px 4px var(--shadow-soft);
+        }
+
+        .price-label {
+            font-style: italic;
+            color: var(--ink-medium);
+            margin-top: 5px;
+        }
+
+        .quantity-section {
+            margin-bottom: 35px;
+        }
+
+        .quantity-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ink-dark);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .quantity-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--gold-accent);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gold-accent);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .quantity-btn:hover {
+            background: var(--gold-accent);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity-display {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--ink-dark);
+            min-width: 60px;
+            text-align: center;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .save-btn,
+        .purchase-btn {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(45, 94, 62, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(45, 94, 62, 0.4);
+            background: linear-gradient(135deg, #367049, var(--emerald));
+        }
+
+        .purchase-btn {
+            background: linear-gradient(135deg, var(--gold-accent), var(--gold-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .purchase-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, #e6c547, var(--gold-accent));
+        }
+
+        .save-btn:active,
+        .purchase-btn:active {
+            transform: translateY(0);
+        }
+
+        .total-display {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .total-label {
+            font-size: 1rem;
+            color: var(--ink-medium);
+            font-style: italic;
+        }
+
+        .total-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gold-accent);
+            margin-top: 5px;
+        }
+
+        .floating-ornament {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.1;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .ornament-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .ornament-2 {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .ornament-3 {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 30px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 32px var(--shadow-deep);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+        }
+
+        .notification.purchase {
+            background: linear-gradient(135deg, var(--gold-accent), var(--gold-light));
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                gap: 40px;
+                padding: 40px 20px;
+            }
+
+            .purchase-container {
+                margin: auto;
+                flex: none;
+                position: relative;
+                top: 0;
+            }
+
+            .purchase-panel {
+                padding: 30px 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 30px 15px;
+            }
+
+            .book-description {
+                padding: 30px 25px;
+            }
+
+            .description-text {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .quantity-controls {
+                gap: 15px;
+            }
+
+            .purchase-container {
+                flex: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="floating-ornament ornament-1">❦</div>
+    <div class="floating-ornament ornament-2">✦</div>
+    <div class="floating-ornament ornament-3">❋</div>
+
+    <div class="main-container">
+        <div class="book-info-container">
+            <div class="ornamental-border"></div>
+
+            <nav class="back-nav">
+                <a href="#" class="back-link" onclick="history.back(); return false">← Back to Collection</a>
+            </nav>
+
+            <h1 class="book-title">{{product.name}}</h1>
+
+            <div class="book-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Author:</span> {{product.author}}
+                </div>
+            </div>
+             <div class="book-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Author:</span> {{product.quotes}}
+                </div>
+            </div>
+
+            <div class="book-description">
+                <p class="description-text">
+                    {{product.desc}}
+                </p>
+                <input type="hidden" id="product_id" value="{{product.id}}">
+            </div>
+        </div>
+
+        <div class="purchase-container">
+            <div class="purchase-panel">
+                <h2 class="purchase-title">Acquire This Wisdom</h2>
+
+                <div class="price-display">
+                    <div class="price-amount">${{product.price}}</div>
+                    
+                    <div class="price-label">per volume</div>
+                </div>
+
+                <div class="quantity-section">
+                    <div class="quantity-label">Quantity</div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" id="decreaseBtn">−</button>
+                        <div class="quantity-display" id="quantityDisplay">1</div>
+                        <button class="quantity-btn" id="increaseBtn">+</button>
+                    </div>
+                </div>
+
+                <div class="total-display">
+                    <div class="total-label">Total Amount</div>
+                    <div class="total-amount" id="totalAmount">$29.99</div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="save-btn" id="saveBtn">Save for Later</button>
+                    <button class="purchase-btn" id="purchaseBtn">Purchase Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let quantity = 1;
+        const basePrice = "{{product.price}}";
+
+        const quantityDisplay = document.getElementById('quantityDisplay');
+        const totalAmount = document.getElementById('totalAmount');
+        const decreaseBtn = document.getElementById('decreaseBtn');
+        const increaseBtn = document.getElementById('increaseBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        const notification = document.getElementById('notification');
+
+        function updateDisplay() {
+            quantityDisplay.textContent = quantity;
+            const total = (quantity * basePrice).toFixed(2);
+            totalAmount.textContent = `$${total}`;
+        }
+
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        decreaseBtn.addEventListener('click', () => {
+            if (quantity > 1) {
+                quantity--;
+                updateDisplay();
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            if (quantity < 99) {
+                quantity++;
+                updateDisplay();
+            }
+        });
+
+        saveBtn.addEventListener('click', () => {
+            showNotification('Book saved to your reading list!', 'success');
+        });
+
+        purchaseBtn.addEventListener('click', () => {
+            showNotification(`${quantity} book${quantity > 1 ? 's' : ''} added to cart! Proceeding to checkout...`, 'purchase');
+
+            // Simulate redirect to checkout after 2 seconds
+            setTimeout(() => {
+                console.log('Redirecting to checkout...');
+                // window.location.href = '/checkout';
+            }, 2000);
+        });
+
+        // Initialize display
+        updateDisplay();
+
+        // Add some visual feedback for button interactions
+        document.querySelectorAll('.quantity-btn, .save-btn, .purchase-btn').forEach(btn => {
+            btn.addEventListener('mousedown', (e) => {
+                e.target.style.transform = 'scale(0.95)';
+            });
+
+            btn.addEventListener('mouseup', (e) => {
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 100);
+            });
+        });
+
+        //  save And Purchase api handler
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            fetch('http://127.0.0.1:8000/save/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: document.getElementById('product_id').value
+                })
+            })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error("Error:", error))
+        })
+
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echoes of Wisdom</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --parchment: #f7f3e9;
+      --ink-dark: #2c1810;
+      --ink-medium: #5d4e37;
+      --gold-accent: #d4af37;
+      --gold-light: #f4e6a1;
+      --shadow-deep: rgba(44, 24, 16, 0.15);
+      --shadow-soft: rgba(44, 24, 16, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%);
+      font-family: 'Crimson Text', serif;
+      color: var(--ink-dark);
+      line-height: 1.7;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a{
+      text-decoration: none;
+    }
+
+    .main-container {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      gap: 60px;
+      position: relative;
+      align-items: flex-start;
+    }
+
+    .manuscript-container {
+
+      flex: 1;
+      position: relative;
+    }
+
+    .search-container {
+      flex: 0 0 350px;
+      position: sticky;
+      top: 80px;
+    }
+
+    .ornamental-border {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      right: -20px;
+      bottom: -20px;
+      border: 2px solid var(--gold-accent);
+      border-image: linear-gradient(45deg, var(--gold-accent), var(--gold-light), var(--gold-accent)) 1;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .header-quill {
+      text-align: center;
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .site-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 600;
+      color: var(--ink-dark);
+      margin-bottom: 20px;
+      position: relative;
+      text-shadow: 0 2px 4px var(--shadow-soft);
+    }
+
+    .site-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+    }
+
+    .quote-count {
+      font-style: italic;
+      color: var(--ink-medium);
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .search-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 40px 30px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow:
+        0 12px 40px var(--shadow-soft),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      position: relative;
+    }
+
+    .search-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--ink-dark);
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px var(--shadow-soft);
+      position: relative;
+    }
+
+    .search-subtitle {
+      font-family: 'Crimson Text', serif;
+      font-size: 0.9rem;
+      color: var(--ink-medium);
+      font-style: italic;
+      text-align: right;
+      margin-bottom: 30px;
+      margin-top: -5px;
+    }
+
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 18px 20px;
+      border: 2px solid rgba(212, 175, 55, 0.3);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      font-family: 'Crimson Text', serif;
+      font-size: 1.1rem;
+      color: var(--ink-dark);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--gold-accent);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--ink-medium);
+      font-style: italic;
+    }
+
+    .search-button {
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--gold-accent), var(--gold-light));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Crimson Text', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+      background: linear-gradient(135deg, #e6c547, var(--gold-accent));
+    }
+
+    .search-button:active {
+      transform: translateY(0);
+    }
+
+    .quotes-collection {
+      list-style: none;
+      margin-bottom: 80px;
+    }
+
+    .quote-verse {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      margin-bottom: 30px;
+      padding: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow:
+        0 8px 32px var(--shadow-soft),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      position: relative;
+      transform: translateY(0);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .quote-verse::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      color: var(--gold-accent);
+      opacity: 0.3;
+      line-height: 0.8;
+      pointer-events: none;
+    }
+
+    .quote-verse:hover {
+      transform: translateY(-8px);
+      box-shadow:
+        0 16px 48px var(--shadow-deep),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      border-color: var(--gold-accent);
+    }
+
+    .quote-text {
+      font-size: 1.3rem;
+      line-height: 1.8;
+      color: var(--ink-dark);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      font-style: italic;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    }
+
+    .pagination-scroll {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      padding: 40px 0;
+      position: relative;
+    }
+
+    .pagination-scroll::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+    }
+
+    .page-nav {
+      color: var(--ink-medium);
+      text-decoration: none;
+      padding: 15px 30px;
+      border: 2px solid var(--gold-accent);
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-nav::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .page-nav:hover::before {
+      left: 100%;
+    }
+
+    .page-nav:hover {
+      background: var(--gold-accent);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+    }
+
+    .page-indicator {
+      color: var(--ink-medium);
+      font-style: italic;
+      font-size: 1.1rem;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 25px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .floating-ornament {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.1;
+      font-size: 2rem;
+      color: var(--gold-accent);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .ornament-1 {
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .ornament-2 {
+      top: 60%;
+      right: 15%;
+      animation-delay: 2s;
+    }
+
+    .ornament-3 {
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .quote-verse {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .quote-verse:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .quote-verse:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .quote-verse:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .quote-verse:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+
+    /* Mobile Responsive Design */
+    @media (max-width: 1024px) {
+      .manuscript-container{
+        margin: auto;
+      }
+
+      .main-container {
+        flex-direction: column;
+        gap: 40px;
+        padding: 40px 20px;
+      }
+      
+      .search-container {
+        margin: auto;
+
+        flex: none;
+        order: -1;
+        position: relative;
+        top: 0;
+        left: auto;
+      }
+
+      .search-panel {
+        padding: 30px 25px;
+      }
+
+      .search-title {
+        font-size: 2.5rem;
+        text-align: center;
+      }
+
+      .search-subtitle {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 30px 15px;
+      }
+
+      .quote-verse {
+        padding: 30px 25px;
+        margin-bottom: 25px;
+      }
+
+      .quote-text {
+        font-size: 1.1rem;
+      }
+
+      .pagination-scroll {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .search-title {
+        font-size: 2rem;
+      }
+
+      .search-panel {
+        padding: 25px 20px;
+      }
+    }
+
+    .author_name{
+      margin-left: 5px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="floating-ornament ornament-1">❦</div>
+  <div class="floating-ornament ornament-2">✦</div>
+  <div class="floating-ornament ornament-3">❋</div>
+
+  <div class="main-container">
+    <div class="manuscript-container">
+      <div class="ornamental-border"></div>
+
+      <header class="header-quill">
+        <h1 class="site-title">Echoes of Wisdom</h1>
+        <p class="quote-count">{{ total }} whispered truths collected</p>
+      </header>
+
+      <ul class="quotes-collection" id="quotes-collection">
+        {% for quote in page_obj %}
+       <a href="http://127.0.0.1:8000/details/{{quote.id}}">
+        <li class="quote-verse">
+          <p class="quote-text">{{ quote.name }} <small style="margin-left: 5px; font-size: 12px;">By
+              {{quote.author}}</small></p>
+        </li>
+        </a>
+        {% endfor %}
+      </ul>
+
+      <nav class="pagination-scroll">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-nav">← Previous Wisdom</a>
+        {% endif %}
+
+        <span class="page-indicator">
+          Scroll {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-nav">Next Wisdom →</a>
+        {% endif %}
+      </nav>
+    </div>
+
+    <div class="search-container">
+      <div class="search-panel">
+        <h2 class="search-title">SEARCH</h2>
+        <p class="search-subtitle">Writer or Book</p>
+
+
+        <input type="text" name="query" class="search-input" style="margin-top:10px ; margin-bottom: 5px;" placeholder="Search within the whispered truths..." id="search_input">
+        <button type="submit" class="search-button" onclick="search()">
+          Seek Wisdom
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function search() {
+  fetch('http://127.0.0.1:8000/search/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 'query': document.getElementById('search_input').value })
+  })
+  .then(response => response.json())  // <-- assuming your Django view returns JsonResponse
+  .then(data => {
+    let quotes_collection = document.getElementById('quotes-collection')
+    quotes_collection.innerHTML = ''  // Clear old results before new ones
+
+    for (let i = 0; i < data.length; i++) {
+      let li = document.createElement('li')
+      li.classList.add('quote-verse')
+
+      let p = document.createElement('p')
+      p.classList.add('quote-text')
+      p.textContent = data[i].name + " "
+
+      let sm_text = document.createElement('small')
+      sm_text.classList.add('author_name')
+      sm_text.textContent = data[i].author
+      let a = document.createElement('a')
+      a.setAttribute('href', `http://127.0.0.1:8000/details/${data[i].id}`)
+      
+      p.appendChild(sm_text)
+      li.appendChild(p)
+      a.appendChild(li)
+      quotes_collection.appendChild(a)
+    }
+  })
+  .catch(error => console.error("Error:", error))
+}
+ </script>
+</body>
+
+</html> 
