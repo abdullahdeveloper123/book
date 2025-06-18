@@ -88,44 +88,24 @@ def search(request):
  
 # /////////////////////////////////////////////////////////////////////////Authentication Register and Login///////////////////////////////////////////////////////////////////////    
 
-@csrf_exempt
-def register(request): 
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        name = data['name']
-        email = data['email']
-        password = data['password']
-        username = name[:-(int(len(name)/2))] + str(random.randint(1000, 9999))
-        user = User.objects.create(username=username, email=email, password=password) 
-        user.set_password(password)
-        user.save()
-        tokens =  requests.post('http://127.0.0.1:8000/api/token/',json={"username": username, "password": password})
-      
-        response = JsonResponse({'objective': 'User saved successfully','data':username}) 
-        response.set_cookie(
-               key='token_access',
-               value=tokens.json()['access'],
-               secure=True,
-               httponly=True)
-            
-
-        response.set_cookie(
-              key='token_refresh',
-              value=tokens.json()['refresh'],
-              secure=True,
-              httponly=True
-          )
-
-        print(tokens)
-         
-       
-        return  response
-    else:
-        return render(request, 'register.html')
+def register(request):
+   if request.method=='POST':
+      name = request.POST.get('name')
+      email = request.POST.get('email')
+      password = request.POST.get('password')
+      if (name,email,password):
+        query = User.objects.create(name=name,email=email,password=password)  
+        query.set_password(password)
+        query.save()
+        return JsonResponse({'success':True}, status=200)
+      else:  JsonResponse({'objective':'invalid creds'}, status=403)
+   else:
+      return render(request, 'register.html')
 
 
-@csrf_exempt
-def login(request):
+
+
+    def login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         email = data.get('email')

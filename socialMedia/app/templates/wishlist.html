@@ -28,9 +28,11 @@
     }
 
     body {
-      background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%);
+      background-color: black;
+      color: white;
+      /* background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%); */
       font-family: 'Crimson Text', serif;
-      color: var(--ink-dark);
+      /* color: var(--ink-dark); */
       line-height: 1.7;
       min-height: 100vh;
       position: relative;
@@ -439,9 +441,12 @@
     }
 
     @keyframes float {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: translateY(0px) rotate(0deg);
       }
+
       50% {
         transform: translateY(-20px) rotate(180deg);
       }
@@ -452,6 +457,7 @@
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -462,11 +468,25 @@
       animation: fadeInUp 0.8s ease-out forwards;
     }
 
-    .book-card:nth-child(2) { animation-delay: 0.1s; }
-    .book-card:nth-child(3) { animation-delay: 0.2s; }
-    .book-card:nth-child(4) { animation-delay: 0.3s; }
-    .book-card:nth-child(5) { animation-delay: 0.4s; }
-    .book-card:nth-child(6) { animation-delay: 0.5s; }
+    .book-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .book-card:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .book-card:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .book-card:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+
+    .book-card:nth-child(6) {
+      animation-delay: 0.5s;
+    }
 
     /* Mobile Responsive Design */
     @media (max-width: 768px) {
@@ -518,10 +538,10 @@
       <a href="/" class="back-link">
         <span>←</span> Return to Library
       </a>
-      
+
       <h1 class="page-title">Sacred Wishlist</h1>
       <p class="wishlist-subtitle">Treasured volumes awaiting discovery</p>
-      
+
       <div class="wishlist-stats">
         <div class="stat-item">
           <div class="stat-number" id="total-books">12</div>
@@ -617,7 +637,8 @@
     <div class="empty-wishlist" id="empty-wishlist" style="display: none;">
       <div class="empty-icon">📚</div>
       <h2 class="empty-title">Your Wishlist Awaits</h2>
-      <p class="empty-subtitle">No sacred texts have been saved yet. Explore our collection and discover wisdom worth treasuring.</p>
+      <p class="empty-subtitle">No sacred texts have been saved yet. Explore our collection and discover wisdom worth
+        treasuring.</p>
       <a href="/" class="browse-btn">Browse Collection</a>
     </div>
   </div>
@@ -657,7 +678,7 @@
       const card = button.closest('.book-card');
       card.style.transform = 'translateX(-100%)';
       card.style.opacity = '0';
-      
+
       setTimeout(() => {
         card.remove();
         updateStats();
@@ -691,12 +712,12 @@
       const totalBooks = cards.length;
       const highPriority = document.querySelectorAll('.book-card[data-priority="high"]').length;
       const authors = new Set();
-      
+
       cards.forEach(card => {
         const author = card.querySelector('.book-author').textContent.replace('By ', '');
         authors.add(author);
       });
-      
+
       document.getElementById('total-books').textContent = totalBooks;
       document.getElementById('high-priority').textContent = highPriority;
       document.getElementById('authors-count').textContent = authors.size;
@@ -707,7 +728,7 @@
       const cards = document.querySelectorAll('.book-card');
       const emptyState = document.getElementById('empty-wishlist');
       const wishlistGrid = document.getElementById('wishlist-grid');
-      
+
       if (cards.length === 0) {
         wishlistGrid.style.display = 'none';
         emptyState.style.display = 'block';

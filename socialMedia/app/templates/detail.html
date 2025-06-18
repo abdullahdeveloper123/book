@@ -28,9 +28,11 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%);
+            background-color: black;
+            color: white;
+            /* background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%); */
             font-family: 'Crimson Text', serif;
-            color: var(--ink-dark);
+            /* color: var(--ink-dark); */
             line-height: 1.7;
             min-height: 100vh;
             position: relative;
@@ -505,7 +507,7 @@
                     <span class="meta-label">Author:</span> {{product.author}}
                 </div>
             </div>
-             <div class="book-meta">
+            <div class="book-meta">
                 <div class="meta-item">
                     <span class="meta-label">Author:</span> {{product.quotes}}
                 </div>
@@ -525,7 +527,7 @@
 
                 <div class="price-display">
                     <div class="price-amount">${{product.price}}</div>
-                    
+
                     <div class="price-label">per volume</div>
                 </div>
 
