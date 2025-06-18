@@ -206,3 +206,8 @@ def add_dummy_books(request):
         )
 
     return JsonResponse({'status': 'saved'})
+
+
+
+
+    # this added from computer
