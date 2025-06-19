@@ -28,11 +28,11 @@
     }
 
     body {
-      background-color: black;
-      color: white;
-      /* background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%); */
+      /* background-color: black;
+      color: white; */
+      background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%);
       font-family: 'Crimson Text', serif;
-      /* color: var(--ink-dark); */
+      color: var(--ink-dark);
       line-height: 1.7;
       min-height: 100vh;
       position: relative;
@@ -531,7 +531,7 @@
   <div class="floating-ornament ornament-2">✦</div>
   <div class="floating-ornament ornament-3">❋</div>
 
-  <div class="main-container">
+  <div class="main-container" id="main">
     <div class="ornamental-border"></div>
 
     <header class="header-section">
@@ -560,77 +560,31 @@
 
     <div class="wishlist-grid" id="wishlist-grid">
       <!-- Sample books - replace with your Django template logic -->
-      <div class="book-card" data-priority="high">
-        <div class="book-header">
-        </div>
-        <h3 class="book-title">The Art of War</h3>
-        <p class="book-author">By Sun Tzu</p>
-        <div class="book-quote">
-          "The supreme excellence is to subdue the enemy without fighting."
-        </div>
-        <div class="book-actions">
-          <button class="action-btn view-btn">
-            <span>📖</span> View Details
-          </button>
-          <button class="action-btn remove-btn" onclick="removeFromWishlist(this)">
-            <span>✗</span> Remove
-          </button>
-        </div>
-      </div>
-
-      <div class="book-card" data-priority="medium">
-        <div class="book-header">
-        </div>
-        <h3 class="book-title">Meditations</h3>
-        <p class="book-author">By Marcus Aurelius</p>
-        <div class="book-quote">
-          "You have power over your mind - not outside events. Realize this, and you will find strength."
-        </div>
-        <div class="book-actions">
-          <button class="action-btn view-btn">
-            <span>📖</span> View Details
-          </button>
-          <button class="action-btn remove-btn" onclick="removeFromWishlist(this)">
-            <span>✗</span> Remove
-          </button>
-        </div>
-      </div>
-
-      <div class="book-card" data-priority="low">
-        <div class="book-header">
-        </div>
-        <h3 class="book-title">The Prophet</h3>
-        <p class="book-author">By Kahlil Gibran</p>
-        <div class="book-quote">
-          "Your pain is the breaking of the shell that encloses your understanding."
-        </div>
-        <div class="book-actions">
-          <button class="action-btn view-btn">
-            <span>📖</span> View Details
-          </button>
-          <button class="action-btn remove-btn" onclick="removeFromWishlist(this)">
-            <span>✗</span> Remove
-          </button>
-        </div>
-      </div>
+      {% for q in query %}
+      <input type="hidden" id="product_id" name="product_id" value="{{q.id}}">
 
       <div class="book-card" data-priority="high">
         <div class="book-header">
         </div>
-        <h3 class="book-title">Letters from a Stoic</h3>
-        <p class="book-author">By Seneca</p>
+        <h3 class="book-title">{{q.name}}</h3>
+        <p class="book-author">By {{q.author}}</p>
         <div class="book-quote">
-          "It is not that we have a short time to live, but that we waste a lot of it."
+          {{q.quotes}}
         </div>
+
         <div class="book-actions">
-          <button class="action-btn view-btn">
-            <span>📖</span> View Details
-          </button>
-          <button class="action-btn remove-btn" onclick="removeFromWishlist(this)">
+          <a href="../details/{{q.product_id}}">
+            <button class="action-btn view-btn">
+              <span>📖</span> View Details
+            </button>
+          </a>
+          <button class="action-btn remove-btn" onclick="removeFromWishlist(this, '{{ q.id }}')">
             <span>✗</span> Remove
           </button>
+
         </div>
       </div>
+      {% endfor %}
     </div>
 
     <!-- Empty state (hidden by default, show when no books) -->
@@ -644,102 +598,51 @@
   </div>
 
   <script>
-    // Sample JavaScript functionality
-    let wishlistData = [
-      {
-        id: 1,
-        title: "The Art of War",
-        author: "Sun Tzu",
-        quote: "The supreme excellence is to subdue the enemy without fighting.",
-      },
-      {
-        id: 2,
-        title: "Meditations",
-        author: "Marcus Aurelius",
-        quote: "You have power over your mind - not outside events. Realize this, and you will find strength.",
-      },
-      {
-        id: 3,
-        title: "The Prophet",
-        author: "Kahlil Gibran",
-        quote: "Your pain is the breaking of the shell that encloses your understanding.",
-      },
-      {
-        id: 4,
-        title: "Letters from a Stoic",
-        author: "Seneca",
-        quote: "It is not that we have a short time to live, but that we waste a lot of it.",
-      }
-    ];
+    function removeFromWishlist(button, productId) {
+      button.innerHTML = '<span>⏳</span> Removing...';  // change text
 
-
-    // Remove from wishlist
-    function removeFromWishlist(button) {
-      const card = button.closest('.book-card');
-      card.style.transform = 'translateX(-100%)';
-      card.style.opacity = '0';
-
-      setTimeout(() => {
-        card.remove();
-        updateStats();
-        checkEmptyState();
-      }, 400);
-    }
-
-    // Clear all wishlist
-    function clearWishlist() {
-      if (confirm('Are you sure you want to remove all books from your wishlist?')) {
-        const cards = document.querySelectorAll('.book-card');
-        cards.forEach((card, index) => {
-          setTimeout(() => {
-            card.style.transform = 'translateY(-50px)';
-            card.style.opacity = '0';
-            setTimeout(() => {
-              card.remove();
-              if (index === cards.length - 1) {
-                updateStats();
-                checkEmptyState();
-              }
-            }, 300);
-          }, index * 100);
+      fetch('http://127.0.0.1:8000/remove_wishlist/', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "id": productId
+        })
+      })
+        .then(response => {
+          if (response.status !== 200) {
+            console.log("Something went wrong!", response.status);
+            button.innerHTML = '<span>✗</span> Failed';
+            return;
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data) {
+            console.log(data);
+            refreshWishlist();
+          }
+        })
+        .catch(error => {
+          console.error("Network error:", error);
+          button.innerHTML = '<span>✗</span> Failed';
         });
-      }
     }
 
-    // Update statistics
-    function updateStats() {
-      const cards = document.querySelectorAll('.book-card');
-      const totalBooks = cards.length;
-      const highPriority = document.querySelectorAll('.book-card[data-priority="high"]').length;
-      const authors = new Set();
-
-      cards.forEach(card => {
-        const author = card.querySelector('.book-author').textContent.replace('By ', '');
-        authors.add(author);
-      });
-
-      document.getElementById('total-books').textContent = totalBooks;
-      document.getElementById('high-priority').textContent = highPriority;
-      document.getElementById('authors-count').textContent = authors.size;
+    function refreshWishlist() {
+      fetch('http://127.0.0.1:8000/wishlist/')  // replace with your actual wishlist URL
+        .then(response => response.text())
+        .then(html => {
+          // Extract just the #main content
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newMain = doc.getElementById('main');
+          document.getElementById('main').innerHTML = newMain.innerHTML;
+        })
+        .catch(error => {
+          console.error("Error refreshing wishlist:", error);
+        });
     }
 
-    // Check if wishlist is empty
-    function checkEmptyState() {
-      const cards = document.querySelectorAll('.book-card');
-      const emptyState = document.getElementById('empty-wishlist');
-      const wishlistGrid = document.getElementById('wishlist-grid');
-
-      if (cards.length === 0) {
-        wishlistGrid.style.display = 'none';
-        emptyState.style.display = 'block';
-      } else {
-        wishlistGrid.style.display = 'grid';
-        emptyState.style.display = 'none';
-      }
-    }
-
-    // Initialize
-    updateStats();
   </script>
 </body>
 

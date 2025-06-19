@@ -26,11 +26,9 @@
     }
 
     body {
-      background-color: black;
-      color: white;
-      /* background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%); */
+      background: linear-gradient(135deg, var(--parchment) 0%, #f0ebe0 100%);
       font-family: 'Crimson Text', serif;
-      /* color: var(--ink-dark); */
+      color: var(--ink-dark);
       line-height: 1.7;
       min-height: 100vh;
       position: relative;
@@ -493,7 +491,8 @@
         Invalid credentials. Please check your email and password.
       </div>
 
-      <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+      <form class="login-form" method="post" id="loginForm" action="{% url 'login' %}">
+      {%csrf_token%}
         <div class="form-group">
           <label class="form-label" for="email">Email Address</label>
           <input type="email" id="email" name="email" class="form-input" placeholder="your.email@example.com" required>

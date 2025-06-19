@@ -14,15 +14,22 @@ class Book(models.Model):
 
 class Wishlist(models.Model):
     product_id = models.IntegerField()
+    name = models.TextField()
+    quotes = models.TextField()
+    desc = models.TextField()
+    price = models.IntegerField()
+    author = models.CharField(max_length=100)
+    user_id = models.IntegerField()
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product_id}"
+        return f"{self.name} for User {self.user_id}"
     
 
 class Order(models.Model):
     product_id = models.IntegerField()
     quantity = models.IntegerField()
+    user_id = models.IntegerField(null=True)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

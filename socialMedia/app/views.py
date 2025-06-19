@@ -1,19 +1,23 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect,get_object_or_404
+from django.http import JsonResponse
 from .models import Book,Order,Wishlist
 from django.core.cache import cache
-from django.views.decorators.cache import cache_page
 from django.core.paginator import Paginator
-import random
 import json
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
-import requests
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate,login,logout
+import stripe
+from django.conf import settings
+from django.forms.models import model_to_dict
 
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+ 
 # /////////////////////////////////////////////////////////////////////////Home///////////////////////////////////////////////////////////////////////
-@login_required(login_url='login')
 def home(request):
       quotes = cache.get('quote')
       page = Paginator(Book.objects.all(), 5)    
@@ -32,33 +36,69 @@ def home(request):
 
 # /////////////////////////////////////////////////////////////////////////Detail///////////////////////////////////////////////////////////////////////
 def detail(request, id):
-     product = Book.objects.get(id=id)
-     product.views = product.views=+1
-     product.save()
-     return render(request, 'detail.html',{'product':product})
- 
+    cache_key = f'product_{id}'
+    product = cache.get(cache_key)
+
+    if not product:
+        book = get_object_or_404(Book, id=id)
+        product = model_to_dict(book)
+        cache.set(cache_key, product, timeout=1200)
+
+    return render(request, 'detail.html', {
+        'product': product,
+        'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY
+    })
+
 # /////////////////////////////////////////////////////////////////////////save product wishlist///////////////////////////////////////////////////////////////////////
 @csrf_exempt
 def save(request):
-  if request.method =='POST':
-   try:  
-     data = json.loads(request.body)
-     product = Book.objects.get(id=data['id'])
-     if not Wishlist.objects.filter(product_id=product.id):
-       query = Wishlist(product_id = product.id) 
-       query.save()
-     return JsonResponse({'status':True, 'message':'saved'})
-   except Exception as e:
-      return JsonResponse({'message':str(e)})
-  else:
-      return JsonResponse({'message':'method not allowed'})
-  
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({'success': False, 'status': 401})
+
+        try:
+            data = json.loads(request.body)
+            book = get_object_or_404(Book, id=data['id'])
+        except (KeyError, json.JSONDecodeError):
+            return JsonResponse({'success': False, 'status': 400, 'message': 'Invalid data'})
+
+        # Check if the book is already in user's wishlist
+        if not Wishlist.objects.filter(product_id=book.id, user_id=request.user.id).exists():
+            Wishlist.objects.create(
+                product_id=book.id,
+                name=book.name,
+                quotes=book.quotes,
+                desc=book.desc,
+                price=book.price,
+                author=book.author,
+                user_id=request.user.id
+            )
+
+        return JsonResponse({'status': True, 'message': 'Book saved to wishlist'})
+
+    return JsonResponse({'message': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+def remove_wishlist(request):
+    try:  
+        data = json.loads(request.body)
+        id = data['id']
+        query = Wishlist.objects.get(id=id) 
+        query.delete()
+        return JsonResponse({"objective": 'successfully removed liked item'}, status=200)
+    except Exception as e:
+        return JsonResponse({"objective": str(e)}, status=400)  
 # /////////////////////////////////////////////////////////////////////////Get Wishlist///////////////////////////////////////////////////////////////////////
      
 
 # /////////////////////////////////////////////////////////////////////////Rendering Wishlist///////////////////////////////////////////////////////////////////////
+@login_required(login_url='login')
 def wishlist(request):
-   return render(request, 'wishlist.html')
+   query = Wishlist.objects.filter(user_id=request.user.id)  
+   product = Book.objects.filter()
+
+   return render(request, 'wishlist.html', {'query':query})
 
 
 
@@ -93,101 +133,85 @@ def register(request):
       name = request.POST.get('name')
       email = request.POST.get('email')
       password = request.POST.get('password')
-      if (name,email,password):
-        query = User.objects.create(name=name,email=email,password=password)  
-        query.set_password(password)
-        query.save()
-        return JsonResponse({'success':True}, status=200)
+      if (name,email,password): 
+        if User.objects.filter(username=email):
+               return JsonResponse({'objective':'user already exists'}, status=403)
+        else:
+               query = User(username=email,first_name=name,email=email,password=password)  
+               query.set_password(password)
+               query.save()
+               login(request, query)
+               return redirect('home')
       else:  JsonResponse({'objective':'invalid creds'}, status=403)
    else:
       return render(request, 'register.html')
 
 
 
-
-    def login(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        email = data.get('email')
-        password = data.get('password')
-        print(email,password)
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return JsonResponse({'objective': 'User not found'}, status=404)
-
-        # Get tokens via SimpleJWT
-        tokens = requests.post('http://127.0.0.1:8000/api/token/', json={
-            "username": user.username,
-            "password": password
-        })
-
-        if tokens.status_code == 200:
-            token_data = tokens.json()
-
-            response = JsonResponse({'objective': 'Login success','success': True,}, status=200)
-            response.set_cookie(
-                key='token_access',
-                value=token_data['access'],
-                httponly=True,
-                secure=True
-            )
-            response.set_cookie(
-                key='token_refresh',
-                value=token_data['refresh'],
-                httponly=True,
-                secure=True
-            )
-
-            return response
-
+def login_view(request):
+   if request.method=='POST':
+      email = request.POST.get('email')
+      password = request.POST.get('password')
+      if (email,password):
+        user = authenticate(username = email, password=password)
+        if user != None:
+           login(request, user)
+           return redirect('home')
         else:
-            return JsonResponse({'objective': 'Invalid credentials'}, status=401)
+           return redirect('login')
+           
+      else:  JsonResponse({'objective':'invalid creds'})
+   else:
+      return render(request, 'login.html')
+   
 
-    else:
-        return render(request, 'login.html')
+   
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+# /////////////////////////////////////////////////////////////////////////Purchase triggered///////////////////////////////////////////////////////////////////////
+ 
+     
 
 
 
-# /////////////////////////////////////////////////////////////////////////Add dummy Books///////////////////////////////////////////////////////////////////////
+# /////////////////////////////////////////////////////////////////////////Order Handlers///////////////////////////////////////////////////////////////////////
 
-def add_dummy_books(request):
-    sample_books = [
-        ("The Silent Forest", "In the stillness, truth finds its voice.", "A suspenseful tale set in an ancient forest where secrets of the past refuse to stay buried.", 650, "Lena Ray", 230),
-        ("Echoes of Tomorrow", "The future belongs to those who dare.", "A sci-fi journey through alternate futures, forgotten timelines, and human resilience.", 850, "Jared Quinn", 780),
-        ("Songs of Dust", "Even dust carries stories.", "A poetic narrative of lives lost and rediscovered in war-torn lands.", 500, "Aisha Malik", 132),
-        ("Digital Gods", "We created them. Now they own us.", "A tech-thriller about AI corporations controlling modern civilization.", 950, "Kevin Hartley", 1025),
-        ("Broken Halos", "Not every angel gets to fly.", "A dark fantasy novel about exiled angels living among humans.", 720, "Rina Caldwell", 889),
-        ("The Paper Town", "Cities made of lies crumble.", "A mysterious town built on deception, and one journalist's quest for the truth.", 630, "Amir Sohail", 420),
-        ("Ashes & Stardust", "From ashes, we rise to stars.", "An epic saga tracing a family’s journey from ruin to cosmic explorers.", 1200, "Claire Demarco", 150),
-        ("The Forgotten Verse", "Some poems are better left unread.", "A literary mystery surrounding a lost poem with fatal consequences.", 480, "Yusuf Rahman", 365),
-        ("Midnight Chronicles", "At midnight, the world changes.", "A horror anthology featuring chilling tales occurring precisely at midnight.", 560, "Jason Crowe", 700),
-        ("Skies of Cyan", "Hope is a color we paint ourselves.", "A war pilot’s memoir of courage, betrayal, and redemption.", 900, "Hana Lee", 990),
-        ("Wired Souls", "Humanity's final upload awaits.", "A cyberpunk novel where consciousness can be digitized — for a price.", 1100, "Marcus Wills", 420),
-        ("A Memory of Waves", "Time forgets. Water remembers.", "A coastal village cursed by ancient sea spirits.", 640, "Mina Iqbal", 310),
-        ("Concrete Dreams", "Cities grow, but people decay.", "Urban drama of four friends chasing success in a ruthless metropolis.", 770, "Sarah Linton", 505),
-        ("The Red Widow", "Her love was death itself.", "A gothic romance about a widow suspected of witchcraft.", 550, "Eleanor Nash", 295),
-        ("Orbit Zero", "First contact was never peaceful.", "An interplanetary war saga beginning at Earth's orbit.", 880, "Rico Zhang", 612),
-        ("The Last Psalm", "Final words matter most.", "A dying priest’s confessions uncover a town’s darkest sins.", 460, "Father Thomas Grey", 278),
-        ("Wanderlust Diaries", "Some journeys never end.", "A travel memoir crossing 30 countries and three continents.", 800, "Aliyah Grant", 900),
-        ("The Serpent’s Pact", "Trust the untrustworthy.", "A political fantasy where betrayal is the only currency.", 950, "Neil Adarsh", 345),
-        ("Chronicles of Ember", "Fire is both destroyer and savior.", "Post-apocalyptic survival in a world scorched by eternal wildfires.", 990, "Carla Moreno", 489),
-        ("The Dying Code", "The last virus holds the cure.", "A biotech thriller about a computer virus engineered to save humanity.", 1020, "Sahil Murthy", 1032)
-    ]
 
-    for name, quotes, desc, price, author, views in sample_books:
-        Book.objects.create(
-            name=name,
-            quotes=quotes,
-            desc=desc,
-            price=price,
-            author=author,
-            views=views
+
+@csrf_exempt
+def create_payment_intent(request):
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        amount = int(data['amount'])  # amount in paisa or cents (not rupees/dollars)
+        intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency='usd',  # or 'pkr' if supported in your account
+            automatic_payment_methods={'enabled': True},
         )
+        return JsonResponse({'clientSecret': intent.client_secret})
 
-    return JsonResponse({'status': 'saved'})
+def checkout(request):
+    return render(request, 'checkout.html', {
+        'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY
+    })
 
 
+@csrf_exempt
+def save_order(request):
+   if request.method=='POST':
+      data = json.loads(request.body)
+      product_id = data['product_id']
+      user_id = request.user.id
+      quantity = data['quantity']
 
-
-    # this added from computer
+      if (product_id, user_id, quantity):
+          Order.objects.create(product_id=product_id, user_id=user_id, quantity=quantity)
+          return JsonResponse({"objective":"order saved success", "success":True}, status=200)
+      else: 
+            return JsonResponse({"objective":'data not valid', 'success':False}, status=401)
+   else:
+      return JsonResponse({"objective":'Method not allowed', 'success':False}, status=405)
+   

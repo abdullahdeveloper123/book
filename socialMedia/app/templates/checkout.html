@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Checkout</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f6f8fb;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      max-width: 850px;
+      width: 100%;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .checkout-card {
+      flex: 1;
+      padding: 35px;
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .book-details {
+      flex: 1;
+      padding: 35px;
+      background: linear-gradient(145deg, #f9fafb, #f3f4f6);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: left;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #222;
+      font-size: 24px;
+    }
+
+    #card-element {
+      padding: 15px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      background-color: #f9fafb;
+      margin-bottom: 20px;
+      transition: border-color 0.3s ease;
+    }
+
+    #card-element.StripeElement--focus {
+      border-color: #6366f1;
+    }
+
+    #pay-button {
+      background-color: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #pay-button:hover {
+      background-color: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    #pay-button:disabled {
+      background-color: #a5b4fc;
+      cursor: not-allowed;
+    }
+
+    #payment-message {
+      margin-top: 15px;
+      font-weight: 600;
+      color: #dc2626;
+      min-height: 20px;
+    }
+
+    .book-details h3 {
+      font-size: 22px;
+      color: #111827;
+      margin-bottom: 10px;
+    }
+
+    .book-details p {
+      color: #374151;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .book-details blockquote {
+      margin-top: 20px;
+      font-size: 18px;
+      font-style: italic;
+      color: #6b7280;
+      border-left: 4px solid #cbd5e1;
+      padding-left: 12px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Checkout card -->
+  <div class="checkout-card">
+    <h2>Complete Your Payment</h2>
+    <div id="card-element"></div>
+    <button id="pay-button">Pay $50.00</button>
+    <div id="payment-message"></div>
+  </div>
+
+  <!-- Book details -->
+  <div class="book-details">
+    <h3>Book Name: The Last Chapter</h3>
+    <p>Author: John Maxwell</p>
+    <blockquote>"A reader lives a thousand lives before he dies. The man who never reads lives only one."</blockquote>
+  </div>
+</div>
+
+<script>
+  const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+  const elements = stripe.elements();
+
+  const card = elements.create("card", {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#111827',
+        '::placeholder': { color: '#9ca3af' },
+      }
+    }
+  });
+  card.mount("#card-element");
+
+  document.getElementById("pay-button").addEventListener("click", () => {
+    document.getElementById("pay-button").disabled = true;
+    fetch("/create-payment-intent/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 5000 })
+    })
+    .then(res => res.json())
+    .then(data => {
+      return stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card: card }
+      });
+    })
+    .then(result => {
+      if (result.error) {
+        document.getElementById("payment-message").textContent = result.error.message;
+      } else {
+        if (result.paymentIntent.status === 'succeeded') {
+          document.getElementById("payment-message").style.color = "#16a34a";
+          document.getElementById("payment-message").textContent = "✅ Payment Successful!";
+        }
+      }
+    })
+    .catch(error => {
+      document.getElementById("payment-message").textContent = "Error: " + error;
+    })
+    .finally(() => {
+      document.getElementById("pay-button").disabled = false;
+    });
+  });
+</script>
+
+</body>
+</html>
