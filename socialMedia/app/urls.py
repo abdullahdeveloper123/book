@@ -15,7 +15,10 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('create-payment-intent/', views.create_payment_intent, name='create_payment_intent'),
-    path('save_order/', views.save_order, name='save_order'), 
+    path('save_order/', views.save_order, name='save_order'),
+    path('get_orders/', views.get_orders, name='get_orders'), 
+    path('library/', views.library, name='library'), 
+    path('add_books/', views.add_books, name='add_books'), 
 
     
 ]   

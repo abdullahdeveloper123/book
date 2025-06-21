@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate,login,logout
 import stripe
 from django.conf import settings
 from django.forms.models import model_to_dict
-
+import random
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -70,8 +70,9 @@ def save(request):
                 quotes=book.quotes,
                 desc=book.desc,
                 price=book.price,
-                author=book.author,
-                user_id=request.user.id
+                author=book.author, 
+                user_id=request.user.id,
+                genre= book.genre
             )
 
         return JsonResponse({'status': True, 'message': 'Book saved to wishlist'})
@@ -126,6 +127,16 @@ def search(request):
  else:    
      return render(request, 'detail.html')
  
+
+# /////////////////////////////////////////////////////////////////////////User Library///////////////////////////////////////////////////////////////////////    
+def library(request):
+    return render(request, 'library.html')
+
+
+
+
+
+
 # /////////////////////////////////////////////////////////////////////////Authentication Register and Login///////////////////////////////////////////////////////////////////////    
 
 def register(request):
@@ -204,14 +215,89 @@ def save_order(request):
    if request.method=='POST':
       data = json.loads(request.body)
       product_id = data['product_id']
+      product= Book.objects.get(id=product_id)
       user_id = request.user.id
       quantity = data['quantity']
+      
 
       if (product_id, user_id, quantity):
-          Order.objects.create(product_id=product_id, user_id=user_id, quantity=quantity)
+          Order.objects.create(product_id=product_id, user_id=user_id, quantity=quantity, name=product.name, quotes =product.quotes,genre=product.genre,year=product.year,pages=product.pages,desc=product.desc,price=product.price,author=product.author)
           return JsonResponse({"objective":"order saved success", "success":True}, status=200)
       else: 
             return JsonResponse({"objective":'data not valid', 'success':False}, status=401)
    else:
       return JsonResponse({"objective":'Method not allowed', 'success':False}, status=405)
    
+# get order list
+@csrf_exempt
+def get_orders(request):
+  query = Order.objects.filter(user_id=request.user.id)
+  if not query:
+      return JsonResponse({'objective':"library is empty","success":False, "empty":True}, status=200)
+  products = []
+  for q in query:
+       data = {
+            "id": 1,
+            "title": q.quotes,
+            "author":q.author,
+            "genre":q.genre,
+            "year": q.year,
+            "pages": q.pages,
+            "description": q.desc,
+            "dateAdded": q.date,
+            "product_id":q.product_id
+            
+       }
+       products.append(data)
+  return JsonResponse(products, safe=False, status=200)
+  
+
+
+# add books 
+ 
+
+@csrf_exempt
+def add_books(request):
+    try:
+        titles = [
+            "The Last Dawn", "Echoes of Silence", "Whispers in the Dark", "Fragments of Time",
+            "The Forgotten Path", "Journey Beyond Stars", "Shadow and Light", "Tides of Fate",
+            "Songs of the Earth", "Memoirs of the Broken"
+        ]
+
+        quotes = [
+            "Not all those who wander are lost.",
+            "Even the darkest night will end and the sun will rise.",
+            "Hope is the thing with feathers that perches in the soul.",
+            "Every moment is a fresh beginning.",
+            "To live will be an awfully big adventure.",
+            "The past beats inside me like a second heart.",
+            "Time you enjoy wasting was not wasted.",
+            "A reader lives a thousand lives before he dies.",
+            "Courage is found in unlikely places.",
+            "We are all stories in the end."
+        ]
+
+        authors = [
+            "Harper West", "Daniel Rivers", "Eleanor Bright", "Liam Cross",
+            "Sophia Blake", "Noah Reed", "Ava Sinclair", "Mason Hart",
+            "Isla Monroe", "Leo Hayes"
+        ]
+
+        for _ in range(20):
+            Book.objects.create(
+                name=random.choice(titles),
+                quotes=random.choice(quotes),
+                genre=random.choice(['Fiction', 'Non-fiction', 'Sci-Fi', 'Fantasy', 'Biography', 'History', 'Romance']),
+                year=random.randint(1950, 2024),
+                pages=random.randint(120, 850),
+                desc=f"A captivating tale of {random.choice(['hope', 'betrayal', 'love', 'courage', 'redemption'])}, spanning generations.",
+                price=random.randint(700, 2500),
+                author=random.choice(authors),
+                views=random.randint(0, 5000)
+            )
+
+        return JsonResponse({'message': '20 books added successfully!'}, status=201)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
