@@ -35,6 +35,7 @@ def home(request):
 
 
 # /////////////////////////////////////////////////////////////////////////Detail///////////////////////////////////////////////////////////////////////
+@login_required(login_url='login')
 def detail(request, id):
     cache_key = f'product_{id}'
     product = cache.get(cache_key)
@@ -50,6 +51,7 @@ def detail(request, id):
     })
 
 # /////////////////////////////////////////////////////////////////////////save product wishlist///////////////////////////////////////////////////////////////////////
+@login_required(login_url='login')
 @csrf_exempt
 def save(request):
     if request.method == 'POST':
@@ -79,7 +81,7 @@ def save(request):
 
     return JsonResponse({'message': 'Method not allowed'}, status=405)
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def remove_wishlist(request):
     try:  
@@ -159,38 +161,91 @@ def register(request):
 
 
 
+@csrf_exempt
 def login_view(request):
-   if request.method=='POST':
-      email = request.POST.get('email')
-      password = request.POST.get('password')
-      if (email,password):
-        user = authenticate(username = email, password=password)
-        if user != None:
-           login(request, user)
-           return redirect('home')
-        else:
-           return redirect('login')
-           
-      else:  JsonResponse({'objective':'invalid creds'})
-   else:
-      return render(request, 'login.html')
-   
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON'}, status=400)
 
-   
+        if email and password:
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({'success': True, 'redirect_url': '/'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Invalid credentials'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Email and password required'}, status=400)
+    else:
+        # If GET or other method, return your login form
+        return render(request, 'login.html')
+
+@login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-# /////////////////////////////////////////////////////////////////////////Purchase triggered///////////////////////////////////////////////////////////////////////
- 
-     
+# /////////////////////////////////////////////////////////////////////////Recommendations triggered///////////////////////////////////////////////////////////////////////
 
+def recommended_books(request):
+    user_id = request.user.id
+    purchases = Order.objects.filter(user_id=user_id)
+
+    # Get distinct genres from user's purchased orders
+    owned_genres = purchases.values_list('genre', flat=True).distinct()
+
+    if owned_genres.exists():
+        # If user has purchased genres, pick 4 random books from those
+        books = Book.objects.filter(genre__in=owned_genres).order_by('?')[:4]
+    else:
+        # Otherwise, pick any 4 random books
+        books = Book.objects.order_by('?')[:4]
+
+    # Prepare recommendations list
+    recommendations = []
+    for book in books:
+        recommendations.append({
+            'name': book.name,
+            'author': book.author,
+            'price': book.price,
+            'product_id':book.id,
+            'quote':book.quotes
+        })
+
+    return JsonResponse({'recommendations': recommendations})
+     
+# /////////////////////////////////////////////////////////////////////////Top trending books ///////////////////////////////////////////////////////////////////////
+
+def top_viewed_books(request):
+    top_books = Book.objects.order_by('-views')[:5]
+    data = []
+    
+    for q in top_books:
+        data.append({
+            "id": q.id,
+            "title": q.quotes,
+            "author": q.author,
+            "name":q.name,
+            "genre": q.genre,
+            "year": q.year,
+            "pages": q.pages,
+            "description": q.desc,
+            "price":q.price
+        })
+    if not cache.get('top_books'):
+           cache.set('top_books', data, timeout=1500)
+    result = cache.get('top_books')
+    return JsonResponse(result, safe=False)
 
 
 # /////////////////////////////////////////////////////////////////////////Order Handlers///////////////////////////////////////////////////////////////////////
 
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def create_payment_intent(request):
     if request.method == 'POST':
@@ -204,31 +259,52 @@ def create_payment_intent(request):
         )
         return JsonResponse({'clientSecret': intent.client_secret})
 
-def checkout(request):
-    return render(request, 'checkout.html', {
-        'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY
-    })
+ 
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def save_order(request):
-   if request.method=='POST':
-      data = json.loads(request.body)
-      product_id = data['product_id']
-      product= Book.objects.get(id=product_id)
-      user_id = request.user.id
-      quantity = data['quantity']
-      
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            product_id = data.get('product_id')
+            quantity = data.get('quantity')
 
-      if (product_id, user_id, quantity):
-          Order.objects.create(product_id=product_id, user_id=user_id, quantity=quantity, name=product.name, quotes =product.quotes,genre=product.genre,year=product.year,pages=product.pages,desc=product.desc,price=product.price,author=product.author)
-          return JsonResponse({"objective":"order saved success", "success":True}, status=200)
-      else: 
-            return JsonResponse({"objective":'data not valid', 'success':False}, status=401)
-   else:
-      return JsonResponse({"objective":'Method not allowed', 'success':False}, status=405)
+            if not (product_id and quantity and int(quantity) > 0):
+                return JsonResponse({"objective": "Invalid data", "success": False}, status=400)
+
+            product = get_object_or_404(Book, id=product_id)
+            user_id = request.user.id
+
+            # Create order
+            Order.objects.create(
+                product_id=product.id,
+                user_id=user_id,
+                quantity=quantity,
+                name=product.name,
+                quotes=product.quotes,
+                genre=product.genre,
+                year=product.year,
+                pages=product.pages,
+                desc=product.desc,
+                price=product.price,
+                author=product.author
+            )
+
+            # Increment views and save
+            product.views += 1
+            product.save()
+
+            return JsonResponse({"objective": "Order saved successfully", "success": True}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"objective": f"Error: {str(e)}", "success": False}, status=500)
+
+    else:
+        return JsonResponse({"objective": "Method not allowed", "success": False}, status=405)
    
 # get order list
+@login_required(login_url='login')
 @csrf_exempt
 def get_orders(request):
   query = Order.objects.filter(user_id=request.user.id)

@@ -5,11 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sacred Library - Personal Collection</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-
     /* Header Navigation */
-             :root {
+    :root {
       --parchment: #fafafa;
       --ink-dark: #1a1a1a;
       --ink-medium: #6b7280;
@@ -37,6 +40,7 @@
       --text-primary: #0f172a;
       --text-secondary: #475569;
       --text-muted: #64748b;
+      --custom-header-dark: linear-gradient(135deg, #667eea 0%, #764ba2 100% 100%);
     }
 
     [data-theme="dark"] {
@@ -46,7 +50,8 @@
       --text-primary: #ffffff;
       --text-secondary: #cbd5e1;
       --text-muted: #94a3b8;
-       --custom-radiant-dark :linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --custom-radiant-dark: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --custom-header-dark: linear-gradient(90deg, rgba(61, 61, 61, 0.96) 0%, rgba(79, 52, 107, 1) 53%, rgba(59, 89, 173, 1) 100%);
     }
 
     * {
@@ -56,18 +61,18 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background:var(  --surface);
-                 color: var(--text-primary);
+           font-family: 'Fraunces', serif;
 
+      background: var(--custom-radiant-dark);
+      color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
     }
 
-     
 
-      
-   /* Navbar Styles */
+
+
+    /* Navbar Styles */
     .navbar {
       position: fixed;
       top: 0;
@@ -94,8 +99,7 @@
       font-family: 'Fraunces', serif;
       font-size: 1.5rem;
       font-weight: 600;
-                  color: var(--text-primary);
-
+      color: var(--primary);
       text-decoration: none;
     }
 
@@ -116,8 +120,7 @@
     }
 
     .nav-link:hover {
-                       color: var(--text-primary);
-
+      color: var(--primary);
     }
 
     .nav-link.active::after {
@@ -127,8 +130,7 @@
       left: 0;
       right: 0;
       height: 2px;
-           background: var(--surface);
-
+      background: var(--primary);
       border-radius: 2px;
     }
 
@@ -138,15 +140,13 @@
       border-radius: 8px;
       padding: 8px 12px;
       cursor: pointer;
-                      color: var(--text-primary);
-
+      color: var(--text-primary);
       transition: all 0.3s ease;
     }
 
     .theme-toggle:hover {
       background: var(--surface-dark);
-                      color: var(--text-primary);
-
+      border-color: var(--primary);
     }
 
     .nav-hamburger {
@@ -218,25 +218,25 @@
 
     .mobile-nav-link:hover {
       background: var(--surface-dark);
-                  color: var(--text-primary);
-
+      color: var(--primary);
     }
-       /* Main Content */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 4rem;
-            align-items: start;
-        }
+
+    /* Main Content */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 4rem;
+      align-items: start;
+    }
 
 
     /* Hero Section */
     .hero-section {
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-                   color: var(--text-primary);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100% 100%);
+      color: var(--text-primary);
 
       padding: 4rem 0;
       text-align: center;
@@ -249,6 +249,7 @@
     }
 
     .hero-title {
+      color: white;
       font-size: clamp(2.5rem, 5vw, 4rem);
       font-weight: 700;
       margin-bottom: 1rem;
@@ -256,6 +257,7 @@
     }
 
     .hero-subtitle {
+      color: white;
       font-size: 1.25rem;
       opacity: 0.9;
       margin-bottom: 3rem;
@@ -266,6 +268,7 @@
 
     .hero-stats {
       display: flex;
+      color: white;
       justify-content: center;
       gap: 4rem;
       flex-wrap: wrap;
@@ -331,7 +334,7 @@
       border: 2px solid #e2e8f0;
       border-radius: 0.5rem;
       font-size: 1rem;
-      background: white;
+      background: var(--surface-dark);
       transition: all 0.2s;
     }
 
@@ -405,7 +408,7 @@
     }
 
     .book-card {
-      background: white;
+      background: var(--surface-dark);
       border-radius: 1rem;
       padding: 1.5rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -453,13 +456,13 @@
     .book-title {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #1e293b;
+      color: var(--text-primary);
       margin-bottom: 0.5rem;
       line-height: 1.3;
     }
 
     .book-author {
-      color: #64748b;
+      color: var(--text-secondary);
       font-weight: 500;
       margin-bottom: 1rem;
     }
@@ -468,12 +471,12 @@
       display: flex;
       gap: 1rem;
       font-size: 0.875rem;
-      color: #64748b;
+      color: var(--text-secondary);
       margin-bottom: 1rem;
     }
 
     .book-description {
-      color: #475569;
+      color: var(--text-primary);
       font-size: 0.875rem;
       line-height: 1.5;
       display: -webkit-box;
@@ -607,19 +610,16 @@
     }
 
     /* Responsive Design */
+
     @media (max-width: 768px) {
-      .nav-container {
-        padding: 0 1rem;
-      }
 
-      .nav-links {
-        gap: 1rem;
-      }
+     .nav-menu {
+         display: none;
+     }
 
-      .hero-section {
-        padding: 2rem 0;
-      }
-
+     .nav-hamburger {
+         display: flex;
+     }
       .hero-stats {
         gap: 2rem;
       }
@@ -656,24 +656,25 @@
       }
     }
   </style>
+
 </head>
 
-<body>
-     <!-- Navbar -->
+<body data-theme="light" class="library">
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-container">
-      <a href="#" class="nav-logo">Echoes of Wisdom</a>
+      <a href="{% url 'home' %}" class="nav-logo">Echoes of Wisdom</a>
 
       <ul class="nav-menu">
-        <li><a href="{% url 'home' %}" class="nav-link active">Home</a></li>
+        <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
         <li><a href="{% url 'wishlist' %}" class="nav-link">Wishlist</a></li>
-        <li><a href="{% url 'library' %}" class="nav-link">Library</a></li>
+        <li><a href="{% url 'library' %}" class="nav-link active">Library</a></li>
         <li>
           <button class="theme-toggle" onclick="toggleTheme()">
             <i class="fas fa-sun" id="theme-icon"></i>
           </button>
         </li>
-        <li><a href="#" class="nav-link">Logout</a></li>
+        <li><a href="{% url 'logout_view' %}" class="nav-link">Logout</a></li>
       </ul>
 
       <div class="nav-hamburger" onclick="toggleMobileNav()">
@@ -685,281 +686,96 @@
   </nav>
 
   <!-- Mobile Sidebar -->
-  <div class="mobile-sidebar" id="mobile-sidebar">
-    <ul class="mobile-nav-menu">
-      <li class="mobile-nav-item">
-        <a href="#" class="mobile-nav-link">
-          <i class="fas fa-home"></i> Home
-        </a>
-      </li>
-      <li class="mobile-nav-item">
-        <a href="#" class="mobile-nav-link">
-          <i class="fas fa-heart"></i> Wishlist
-        </a>
-      </li>
-      <li class="mobile-nav-item">
-        <a href="#" class="mobile-nav-link">
-          <i class="fas fa-book"></i> Library
-        </a>
-      </li>
-      <li class="mobile-nav-item">
-        <a href="#" class="mobile-nav-link" onclick="toggleTheme()">
-          <i class="fas fa-sun" id="mobile-theme-icon"></i> Theme
-        </a>
-      </li>
-      <li class="mobile-nav-item">
-        <a href="#" class="mobile-nav-link">
-          <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
-      </li>
-    </ul>
-  </div>
-
+   <div class="mobile-sidebar" id="mobile-sidebar">
+        <ul class="mobile-nav-menu">
+            <li class="mobile-nav-item">
+                <a href="{% url 'home' %}" class="mobile-nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{% url 'wishlist' %}" class="mobile-nav-link">
+                    <i class="fas fa-heart"></i> Wishlist
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{% url 'library' %}" class="mobile-nav-link">
+                    <i class="fas fa-book"></i> Library
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" onclick="toggleTheme()">
+                    <i class="fas fa-sun" id="mobile-theme-icon"></i> Theme
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="logout_view" class="mobile-nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
   <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-container">
-      <h1 class="hero-title">Your Sacred Library</h1>
-      <p class="hero-subtitle">Your personal collection of treasured wisdom and knowledge</p>
-      
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-number" id="total-books">0</span>
-          <span class="stat-label">Books</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" id="total-authors">0</span>
-          <span class="stat-label">Authors</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" id="total-genres">0</span>
-          <span class="stat-label">Genres</span>
+  <section class="library">
+    <section class="hero-section">
+      <div class="hero-container">
+        <h1 class="hero-title">Your Sacred Library</h1>
+        <p class="hero-subtitle">Your personal collection of treasured wisdom and knowledge</p>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="total-books">0</span>
+            <span class="stat-label">Books</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="total-authors">0</span>
+            <span class="stat-label">Authors</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="total-genres">0</span>
+            <span class="stat-label">Genres</span>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="library-controls">
+        <div class="search-container">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search by title or author...">
+
+        </div>
+
+        <div class="view-controls" id="view-controls">
+
+        </div>
+      </div>
+
+      <div class="books-grid" id="books-grid">
+        <!-- Books will be dynamically inserted here -->
+      </div>
+
+      <div class="books-list" id="books-list">
+        <!-- List view content -->
+      </div>
+
+      <div class="no-results" id="no-results" style="display: none;">
+        <div class="empty-icon">🔍</div>
+        <h3 class="empty-title">No books found</h3>
+        <p class="empty-subtitle">Try adjusting your search terms or browse all books.</p>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-library" id="empty-library" style="display: none;">
+        <div class="empty-icon">📚</div>
+        <h2 class="empty-title">Your Library Awaits</h2>
+        <p class="empty-subtitle">Start building your personal collection of wisdom and knowledge.</p>
+        <a href="/" class="browse-btn">Browse Books</a>
+      </div>
+    </main>
   </section>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="library-controls">
-      <div class="search-container">
-        <input type="text" class="search-input" id="searchInput" placeholder="Search by title or author...">
-        <span class="search-icon">🔍</span>
-      </div>
-
-      <div class="view-controls" id="view-controls">
-        <div class="view-toggle">
-          <button class="toggle-btn active" data-view="grid">Grid View</button>
-          <button class="toggle-btn" data-view="list">List View</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="books-grid" id="books-grid">
-      <!-- Books will be dynamically inserted here -->
-    </div>
-
-    <div class="books-list" id="books-list">
-      <!-- List view content -->
-    </div>
-
-    <div class="no-results" id="no-results" style="display: none;">
-      <div class="empty-icon">🔍</div>
-      <h3 class="empty-title">No books found</h3>
-      <p class="empty-subtitle">Try adjusting your search terms or browse all books.</p>
-    </div>
-
-    <!-- Empty state -->
-    <div class="empty-library" id="empty-library" style="display: none;">
-      <div class="empty-icon">📚</div>
-      <h2 class="empty-title">Your Library Awaits</h2>
-      <p class="empty-subtitle">Start building your personal collection of wisdom and knowledge.</p>
-      <a href="/" class="browse-btn">Browse Books</a>
-    </div>
-  </main>
-
-<script>
-        // Theme Toggle Functionality
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            const mobileThemeIcon = document.getElementById('mobile-theme-icon');
-
-            if (body.getAttribute('data-theme') === 'light') {
-                body.setAttribute('data-theme', 'dark');
-                themeIcon.className = 'fas fa-moon';
-                mobileThemeIcon.className = 'fas fa-moon';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.setAttribute('data-theme', 'light');
-                themeIcon.className = 'fas fa-sun';
-                mobileThemeIcon.className = 'fas fa-sun';
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-  let booksData = [];
-  let filteredBooks = [];
-  let currentView = 'grid';
-
-  const bookStoreURL = "https://mystore.com/book";
-
-  document.addEventListener('DOMContentLoaded', async function () {
-    await fetchBooks();
-    filteredBooks = [...booksData];
-    updateStats();
-    createGenreFilter();
-    renderBooks();
-    setupEventListeners();
-  });
-
-  async function fetchBooks() {
-    try {
-      const response = await fetch('http://127.0.0.1:8000/get_orders/');
-      const data = await response.json();
-      booksData = data;
-      console.log('Fetched books:', booksData);
-    } catch (error) {
-      console.error('Failed to fetch books:', error);
-    }
-  }
-
-  function updateStats() {
-    document.getElementById('total-books').textContent = booksData.length;
-    document.getElementById('total-authors').textContent = new Set(booksData.map(b => b.author)).size;
-    document.getElementById('total-genres').textContent = new Set(booksData.map(b => b.genre)).size;
-  }
-
-  function setupEventListeners() {
-    document.addEventListener('click', handleBookActions);
-    document.querySelectorAll('.toggle-btn').forEach(btn =>
-      btn.addEventListener('click', handleViewToggle)
-    );
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-      searchInput.addEventListener('input', handleSearch);
-    }
-  }
-
-  function handleViewToggle(event) {
-    const viewType = event.target.dataset.view;
-    currentView = viewType;
-    document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('books-grid').style.display = viewType === 'grid' ? 'grid' : 'none';
-    document.getElementById('books-list').style.display = viewType === 'list' ? 'flex' : 'none';
-    renderBooks();
-  }
-
-  function handleBookActions(event) {
-    if (event.target.classList.contains('copy-btn')) {
-      const bookId = event.target.closest('[data-book-id]').dataset.bookId;
-      copyBookURL(bookId);
-    }
-  }
-
-  function copyBookURL(bookId) {
-    const book = booksData.find(b => b.id == bookId);
-    if (!book) return;
-    const urlToCopy = `${bookStoreURL}/${book.product_id}`;
-    navigator.clipboard.writeText(urlToCopy).then(() => {
-      alert(`Copied: ${urlToCopy}`);
-    });
-  }
-
-  function renderBooks() {
-    const gridContainer = document.getElementById('books-grid');
-    const listContainer = document.getElementById('books-list');
-    const noResults = document.getElementById('no-results');
-    gridContainer.innerHTML = "";
-    listContainer.innerHTML = "";
-
-    if (filteredBooks.length === 0) {
-      noResults.style.display = 'block';
-      return;
-    } else {
-      noResults.style.display = 'none';
-    }
-
-    if (currentView === 'grid') {
-      gridContainer.innerHTML = filteredBooks.map(book => createBookCard(book)).join('');
-    } else {
-      listContainer.innerHTML = filteredBooks.map(book => createBookListItem(book)).join('');
-    }
-  }
-
-  function createBookCard(book) {
-    return `
-      <div class="book-card" data-book-id="${book.id}">
-        <div class="book-header">
-          <span class="book-genre">${book.genre}</span>
-        </div>
-        <div class="book-content">
-          <h3 class="book-title">${book.title}</h3>
-          <p class="book-author">By ${book.author}</p>
-          <div class="book-meta">
-            <span>📅 ${book.year}</span>
-            <span>📄 ${book.pages} pages</span>
-          </div>
-          <p class="book-description">${book.description}</p>
-          <div class="book-actions">
-            <a href="../details/${book.product_id}" class="action-btn view-btn">🛒 View in Store</a>
-            <button class="action-btn copy-btn">📋 Copy</button>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  function createBookListItem(book) {
-    return `
-      <div class="book-list-item" data-book-id="${book.id}" style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #ddd;border-radius:8px;margin-bottom:8px;background:#fafafa;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-        <div style="flex:1;">
-          <h3 style="margin:0 0 4px;font-size:18px;">${book.title}</h3>
-          <p style="margin:0;color:#666;font-size:14px;">By <strong>${book.author}</strong> | <em>${book.genre}</em> | 📅 ${book.year} | 📄 ${book.pages} pages</p>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <a href="../details/${book.product_id}" class="action-btn view-btn" style="padding:6px 10px;border:none;background:#4caf50;color:#fff;border-radius:4px;cursor:pointer;">🛒 View</a>
-          <button class="action-btn copy-btn" style="padding:6px 10px;border:none;background:#2196f3;color:#fff;border-radius:4px;cursor:pointer;">📋 Copy</button>
-        </div>
-      </div>`;
-  }
-
-  function createGenreFilter() {
-    const parent = document.getElementById('view-controls');
-    if (!parent) return;
-
-    const select = document.createElement('select');
-    select.setAttribute('class', 'genre-filter');
-    select.setAttribute('id', 'genreFilter');
-    select.innerHTML = `<option value="">All Genres</option>`;
-
-    const genres = [...new Set(booksData.map(book => book.genre))];
-    genres.forEach(genre => {
-      const option = document.createElement('option');
-      option.value = genre;
-      option.textContent = genre;
-      select.appendChild(option);
-    });
-
-    parent.appendChild(select);
-    select.addEventListener('change', () => {
-      handleSearch();
-    });
-  }
-
-  function handleSearch() {
-    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-    const selectedGenre = document.getElementById('genreFilter')?.value;
-
-    filteredBooks = booksData.filter(book => {
-      const matchesSearch = book.title.toLowerCase().includes(searchTerm) ||
-        book.author.toLowerCase().includes(searchTerm);
-      const matchesGenre = !selectedGenre || book.genre === selectedGenre;
-      return matchesSearch && matchesGenre;
-    });
-
-    renderBooks();
-  }
-</script>
+<script src="../static/js/library.js"></script>
 
 </body>
 

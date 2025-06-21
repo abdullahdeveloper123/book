@@ -5,825 +5,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sacred Wishlist - Echoes of Wisdom</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../static/css/main.css">
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100% 100%);
-      min-height: 100vh;
-      color: #333;
-    }
-
-
-    /* Header Navigation */
-             :root {
-      --parchment: #fafafa;
-      --ink-dark: #1a1a1a;
-      --ink-medium: #6b7280;
-      --gold-accent: #f59e0b;
-      --gold-light: #fbbf24;
-      --shadow-deep: rgba(0, 0, 0, 0.12);
-      --shadow-soft: rgba(0, 0, 0, 0.04);
-      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
-
-      /* Professional Color Palette */
-      --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100% 100%);
-      ;
-      --primary-dark: #1d4ed8;
-      --secondary: #64748b;
-      --accent: #0ea5e9;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --error: #ef4444;
-      --surface: #ffffff;
-      --surface-dark: #f8fafc;
-      --border: #e2e8f0;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #64748b;
-    }
-
-    [data-theme="dark"] {
-      --surface: #0f172a;
-      --surface-dark: #1e293b;
-      --border: #334155;
-      --text-primary: #ffffff;
-      --text-secondary: #cbd5e1;
-      --text-muted: #94a3b8;
-    }
-
-  /* Navbar Styles */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-    }
-
-    .nav-logo {
-      font-family: 'Fraunces', serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-link {
-      color: var(--text-primary);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-
-    .nav-link:hover {
-      color: var(--primary);
-    }
-
-    .nav-link.active::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
-    }
-
-    .theme-toggle {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      cursor: pointer;
-      color: var(--text-primary);
-      transition: all 0.3s ease;
-    }
-
-    .theme-toggle:hover {
-      background: var(--surface-dark);
-      border-color: var(--primary);
-    }
-
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    .nav-hamburger span {
-      width: 25px;
-      height: 3px;
-      background: var(--text-primary);
-      margin: 3px 0;
-      transition: 0.3s;
-      border-radius: 2px;
-    }
-
-    .nav-hamburger.active span:nth-child(1) {
-      transform: rotate(-45deg) translate(-5px, 6px);
-    }
-
-    .nav-hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .nav-hamburger.active span:nth-child(3) {
-      transform: rotate(45deg) translate(-5px, -6px);
-    }
-
-    /* Mobile Sidebar */
-    .mobile-sidebar {
-      position: fixed;
-      top: 70px;
-      right: -100%;
-      width: 300px;
-      height: calc(100vh - 70px);
-      background: var(--surface);
-      border-left: 1px solid var(--border);
-      z-index: 999;
-      transition: right 0.3s ease;
-      box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .mobile-sidebar.active {
-      right: 0;
-    }
-
-    .mobile-nav-menu {
-      padding: 20px;
-      list-style: none;
-    }
-
-    .mobile-nav-item {
-      margin-bottom: 16px;
-    }
-
-    .mobile-nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-primary);
-      text-decoration: none;
-      font-weight: 500;
-      padding: 12px 16px;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .mobile-nav-link:hover {
-      background: var(--surface-dark);
-      color: var(--primary);
-    }
-
-    .user-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-    }
-
-    .main-content {
-      padding: 3rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .hero-section {
-      text-align: center;
-      color: white;
-      margin-bottom: 3rem;
-    }
-
-    .page-title {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      line-height: 1.2;
-    }
-
-    .page-subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      margin-bottom: 2rem;
-    }
-
-    .wishlist-stats {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      margin-bottom: 3rem;
-    }
-
-    .stat-item {
-      text-align: center;
-      color: white;
-    }
-
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: 700;
-      display: block;
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .content-section {
-      background: #f8f9fa;
-      border-radius: 12px;
-      padding: 2rem;
-      margin-top: 2rem;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .section-subtitle {
-      color: #666;
-      margin-top: 0.5rem;
-    }
-
-    .filter-controls {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.5rem 1rem;
-      border: 2px solid #e0e0e0;
-      border-radius: 25px;
-      background: white;
-      color: #666;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
-
-    .filter-btn:hover,
-    .filter-btn.active {
-      border-color:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);;
-      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);;
-      color: white;
-    }
-
-    .clear-all-btn {
-      padding: 0.5rem 1rem;
-      background: #dc3545;
-      border: none;
-      border-radius: 25px;
-      color: white;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
-
-    .clear-all-btn:hover {
-      background: #c82333;
-      transform: translateY(-1px);
-    }
-
-    .books-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .book-card {
-      background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .book-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-    }
-
-    .book-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .book-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-
-    .book-priority {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .priority-high {
-      background: #ffeaea;
-      color: #dc3545;
-    }
-
-    .priority-medium {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .priority-low {
-      background: #d1e7dd;
-      color: #0f5132;
-    }
-
-    .book-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 0.5rem;
-      line-height: 1.4;
-    }
-
-    .book-author {
-      color: #666;
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-    }
-
-    .book-quote {
-      font-style: italic;
-      color: #555;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      padding-left: 1rem;
-      border-left: 3px solidlinear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-      position: relative;
-    }
-
-    .book-quote::before {
-      content: '"';
-      position: absolute;
-      left: -0.5rem;
-      top: -0.25rem;
-      font-size: 1.5rem;
-      color:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-      opacity: 0.5;
-    }
-
-    .book-actions {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .action-btn {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-
-    .view-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-      color: white;
-    }
-
-    .view-btn:hover {
-      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-      transform: translateY(-1px);
-    }
-
-    .remove-btn {
-      background: #f8f9fa;
-      color: #dc3545;
-      border: 1px solid #e0e0e0;
-    }
-
-    .remove-btn:hover {
-      background: #dc3545;
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .empty-wishlist {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #666;
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    .empty-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: #333;
-    }
-
-    .empty-subtitle {
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .browse-btn {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .browse-btn:hover {
-      background:linear-gradient(135deg, #667eea 0%, #764ba2 100%
-100%
-);
-      transform: translateY(-1px);
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-
-      .main-content {
-        padding: 2rem 1rem;
-      }
-
-      .page-title {
-        font-size: 2rem;
-      }
-
-      .wishlist-stats {
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-
-      .books-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-
-      .filter-controls {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .book-actions {
-        flex-direction: column;
-      }
-    }
-
-    /* Animation */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .book-card {
-      animation: fadeInUp 0.6s ease-out;
-    }
-
-    .book-card:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-
-    .book-card:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-
-    .book-card:nth-child(4) {
-      animation-delay: 0.3s;
-    }
-
-    .book-card:nth-child(5) {
-      animation-delay: 0.4s;
-    }
-
-    .book-card:nth-child(6) {
-      animation-delay: 0.5s;
-    }
-  </style>
 </head>
 
-<body>
+<body data-theme="light">
   <!-- Header -->
   <header class="header">
     <nav class="navbar">
-    <div class="nav-container">
-      <a href="#" class="nav-logo">Echoes of Wisdom</a>
+      <div class="nav-container">
+        <a href="{% url 'home' %}" class="nav-logo">Echoes of Wisdom</a>
 
-      <ul class="nav-menu">
-        <li><a href="{% url 'home' %}" class="nav-link active">Home</a></li>
-        <li><a href="{% url 'wishlist' %}" class="nav-link">Wishlist</a></li>
-        <li><a href="{% url 'library' %}" class="nav-link">Library</a></li>
-        <li>
-          <button class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-sun" id="theme-icon"></i>
-          </button>
-        </li>
-        <li><a href="#" class="nav-link">Logout</a></li>
-      </ul>
-
-      <div class="nav-hamburger" onclick="toggleMobileNav()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </nav>
-  </header>
-
-  <!-- Main Content -->
-  <main class="main-content" id="main">
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <h1 class="page-title">Your Sacred Wishlist</h1>
-      <p class="page-subtitle">Treasured volumes awaiting your discovery</p>
-
-      <div class="wishlist-stats">
-        <div class="stat-item">
-          <span class="stat-number" id="total-books">{{ query|length|default:"0" }}</span>
-          <span class="stat-label">Books</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" id="author-count">{{ authors_count|default:"0" }}</span>
-          <span class="stat-label">Authors</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" id="genre-count">{{ categories_count|default:"0" }}</span>
-          <span class="stat-label">Categories</span>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Content Section -->
-    <section class="content-section">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Your Collection</h2>
-          <p class="section-subtitle">Handpicked wisdom to inspire and motivate</p>
-        </div>
-
-      </div>
-
-      <div class="books-grid" id="books-grid">
-        <!-- Sample books - replace with your Django template logic -->
-        {% for q in query %}
-        <div class="book-card" data-author="{{ q.author }}" data-genre="{{ q.genre }}">
-          <input type="hidden" class="product-id" value="{{q.id}}">
-
-          <div class="book-header">
-            <span class="book-priority priority-high">{{q.genre}}</span>
-          </div>
-
-          <h3 class="book-title">{{q.name}}</h3>
-          <p class="book-author">By {{q.author}}</p>
-
-          <div class="book-quote">
-            {{q.quotes}}
-          </div>
-
-          <div class="book-actions">
-            <a href="../details/{{q.product_id}}" class="action-btn view-btn">
-              📖 View Details
-            </a>
-            <button class="action-btn remove-btn" onclick="removeFromWishlist(this, '{{ q.id }}')">
-              ✗ Remove
+        <ul class="nav-menu">
+          <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+          <li><a href="{% url 'wishlist' %}" class="nav-link active">Wishlist</a></li>
+          <li><a href="{% url 'library' %}" class="nav-link">Library</a></li>
+          <li>
+            <button class="theme-toggle" onclick="toggleTheme()">
+              <i class="fas fa-sun" id="theme-icon"></i>
             </button>
-          </div>
-        </div>
-        {% empty %}
-        <div class="empty-wishlist" id="empty-wishlist">
-          <div class="empty-icon">📚</div>
-          <h2 class="empty-title">Your Wishlist Awaits</h2>
-          <p class="empty-subtitle">No sacred texts have been saved yet. Explore our collection and discover wisdom
-            worth treasuring.</p>
-          <a href="/" class="browse-btn">Browse Collection</a>
-        </div>
-        {% endfor %}
+          </li>
+          <li><a href="{% url 'logout_view' %}" class="nav-link">Logout</a></li>
+        </ul>
 
+        <div class="nav-hamburger" onclick="toggleMobileNav()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
-    </section>
-  </main>
+    </nav>
+     <div class="mobile-sidebar" id="mobile-sidebar">
+        <ul class="mobile-nav-menu">
+            <li class="mobile-nav-item">
+                <a href="{% url 'home' %}" class="mobile-nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{% url 'wishlist' %}" class="mobile-nav-link">
+                    <i class="fas fa-heart"></i> Wishlist
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{% url 'library' %}" class="mobile-nav-link">
+                    <i class="fas fa-book"></i> Library
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" onclick="toggleTheme()">
+                    <i class="fas fa-sun" id="mobile-theme-icon"></i> Theme
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="logout_view" class="mobile-nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+  </header>
+  <section class="wishlist">
+    <!-- Main Content -->
+    <main class="main-content" id="main">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <h1 class="page-title">Your Sacred Wishlist</h1>
+        <p class="page-subtitle">Treasured volumes awaiting your discovery</p>
 
-  <script>
-    function removeFromWishlist(button, productId) {
-      button.innerHTML = '⏳ Removing...';
-      button.disabled = true;
+        <div class="wishlist-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="total-books">{{ query|length|default:"0" }}</span>
+            <span class="stat-label">Books</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="author-count">{{ authors_count|default:"0" }}</span>
+            <span class="stat-label">Authors</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="genre-count">{{ categories_count|default:"0" }}</span>
+            <span class="stat-label">Categories</span>
+          </div>
 
-      fetch('http://127.0.0.1:8000/remove_wishlist/', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "id": productId })
-      })
-        .then(response => {
-          if (response.status !== 200) {
-            console.log("Something went wrong!", response.status);
-            button.innerHTML = '✗ Failed';
-            button.disabled = false;
-            return;
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data) {
-            console.log(data);
-            const card = button.closest('.book-card');
-            card.style.transform = 'translateX(-100%)';
-            card.style.opacity = '0';
-            setTimeout(() => {
-              card.remove();
-              updateBookCount();
-              checkEmptyState();
-            }, 300);
-          }
-        })
-        .catch(error => {
-          console.error("Network error:", error);
-          button.innerHTML = '✗ Failed';
-          button.disabled = false;
-        });
-    }
-
-    function updateBookCount() {
-      const cards = document.querySelectorAll('.book-card');
-      document.getElementById('total-books').textContent = cards.length;
-
-      // Unique authors
-      const authors = new Set();
-      cards.forEach(card => {
-        authors.add(card.getAttribute('data-author'));
-      });
-      document.getElementById('author-count').textContent = authors.size;
-
-      // Unique genres
-      const genres = new Set();
-      cards.forEach(card => {
-        genres.add(card.getAttribute('data-genre'));
-      });
-      document.getElementById('genre-count').textContent = genres.size;
-    }
-
-    function checkEmptyState() {
-      const grid = document.getElementById('books-grid');
-      const cards = document.querySelectorAll('.book-card');
-
-      if (cards.length === 0) {
-        grid.innerHTML = `
-        <div class="empty-wishlist">
-          <div class="empty-icon">📚</div>
-          <h2 class="empty-title">Your Wishlist Awaits</h2>
-          <p class="empty-subtitle">No sacred texts have been saved yet. Explore our collection and discover wisdom worth treasuring.</p>
-          <a href="/" class="browse-btn">Browse Collection</a>
         </div>
-      `;
-      }
-    }
+      </section>
 
-    function clearWishlist() {
-      if (confirm('Are you sure you want to clear your entire wishlist?')) {
-        document.querySelectorAll('.book-card').forEach(card => {
-          card.style.transform = 'translateX(-100%)';
-          card.style.opacity = '0';
-        });
+      <!-- Content Section -->
+      <section class="content-section">
+        <div class="section-header">
+          <div style="margin: auto;">
+            <h2 class="section-title">Your Collection</h2>
+            <p class="section-subtitle">Handpicked wisdom to inspire and motivate</p>
+          </div>
 
-        setTimeout(() => {
-          document.getElementById('books-grid').innerHTML = `
-          <div class="empty-wishlist">
+        </div>
+
+        <div class="books-grid" id="books-grid">
+          <!-- Sample books - replace with your Django template logic -->
+          {% for q in query %}
+          <div class="book-card" data-author="{{ q.author }}" data-genre="{{ q.genre }}">
+            <input type="hidden" class="product-id" value="{{q.id}}">
+
+            <div class="book-header">
+              <span class="book-priority priority-high">{{q.genre}}</span>
+            </div>
+
+            <h3 class="book-title">{{q.name}}</h3>
+            <p class="book-author">By {{q.author}}</p>
+
+            <div class="book-quote">
+              {{q.quotes}}
+            </div>
+
+            <div class="book-actions">
+              <a href="../details/{{q.product_id}}" class="action-btn view-btn">
+                📖 View Details
+              </a>
+              <button class="action-btn remove-btn" onclick="removeFromWishlist(this, '{{ q.id }}')">
+                ✗ Remove
+              </button>
+            </div>
+          </div>
+          {% empty %}
+          <div class="empty-wishlist" id="empty-wishlist">
             <div class="empty-icon">📚</div>
             <h2 class="empty-title">Your Wishlist Awaits</h2>
-            <p class="empty-subtitle">No sacred texts have been saved yet. Explore our collection and discover wisdom worth treasuring.</p>
-            <a href="/" class="browse-btn">Browse Collection</a>
+            <p class="empty-subtitle">No sacred texts have been saved yet. Explore our collection and discover wisdom
+              worth treasuring.</p>
+            <a href="{% url 'home' %}" class="browse-btn">Browse Collection</a>
           </div>
-        `;
-          updateBookCount();
-        }, 300);
-      }
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-      updateBookCount();
-    });
+          {% endfor %}
 
-  </script>
+        </div>
+      </section>
+    </main>
+  </section>
+  <script src="../static/js/wishlist.js"></script>
+
 
 </body>
 

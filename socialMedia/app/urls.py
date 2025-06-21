@@ -19,6 +19,9 @@ urlpatterns = [
     path('get_orders/', views.get_orders, name='get_orders'), 
     path('library/', views.library, name='library'), 
     path('add_books/', views.add_books, name='add_books'), 
+    path('recommended-books/', views.recommended_books, name='recommended_books'), 
+    path('trending_books/', views.top_viewed_books, name='trending_books'), 
+
 
     
 ]   
